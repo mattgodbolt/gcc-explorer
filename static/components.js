@@ -46,6 +46,13 @@ module.exports = {
             },
         };
     },
+    getCompilerForTree: function (treeId, lang) {
+        return {
+            type: 'component',
+            componentName: 'compiler',
+            componentState: {tree: treeId, lang: lang},
+        };
+    },
     getExecutor: function (editorId, lang) {
         return {
             type: 'component',
@@ -66,6 +73,13 @@ module.exports = {
             },
         };
     },
+    getExecutorForTree: function (treeId, lang) {
+        return {
+            type: 'component',
+            componentName: 'executor',
+            componentState: {tree: treeId, lang: lang},
+        };
+    },
     getEditor: function (id, langId) {
         return {
             type: 'component',
@@ -80,14 +94,21 @@ module.exports = {
             componentState: {id: id, source: source, options: options},
         };
     },
-    getOutput: function (compiler, editor) {
+    getTree: function (id) {
+        return {
+            type: 'component',
+            componentName: 'filelisting',
+            componentState: {id: id},
+        };
+    },
+    getOutput: function (compiler, editor, tree) {
         return {
             type: 'component',
             componentName: 'output',
-            componentState: {compiler: compiler, editor: editor},
+            componentState: {compiler: compiler, editor: editor, tree: tree},
         };
     },
-    getToolViewWith: function (compiler, editor, toolId, args) {
+    getToolViewWith: function (compiler, editor, toolId, args, tree) {
         return {
             type: 'component',
             componentName: 'tool',
@@ -96,6 +117,7 @@ module.exports = {
                 editor: editor,
                 toolId: toolId,
                 args: args,
+                tree: tree,
             },
         };
     },

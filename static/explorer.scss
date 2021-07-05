@@ -791,3 +791,18 @@ html[data-theme=dark] {
 .conformance-wrapper .compiler-list .form-row {
     padding-top: 3px;
 }
+
+.filelisting-editor-file {
+    cursor: pointer;
+    line-height: 14px;
+    padding: 0px 0px 0px 5px;
+}
+.filelisting-editor-file span {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    float: left;
+    margin-top: 6px;
+}
+.filelisting-editor-file button {
+    float: right;
+    padding: 4px 10px 4px 0px;
+}

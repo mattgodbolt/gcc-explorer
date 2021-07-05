@@ -488,6 +488,10 @@ function start() {
         hub = new Hub(layout, subLangId, defaultLangId);
     }
 
+    if (hub.hasTree()) {
+        $('#add-tree').prop('disabled', true);
+    }
+
     function sizeRoot() {
         var height = $(window).height() - (root.position().top || 0) - ($('#simplecook:visible').height() || 0);
         root.height(height);
@@ -516,7 +520,11 @@ function start() {
     function setupAdd(thing, func) {
         layout.createDragSource(thing, func);
         thing.click(function () {
-            hub.addAtRoot(func());
+            if (hub.hasTree()) {
+                hub.addInEditorStackIfPossible(func());
+            } else {
+                hub.addAtRoot(func());
+            }
         });
     }
 
@@ -525,6 +533,10 @@ function start() {
     });
     setupAdd($('#add-diff'), function () {
         return Components.getDiff();
+    });
+    setupAdd($('#add-tree'), function () {
+        $('#add-tree').prop('disabled', true);
+        return Components.getTree();
     });
 
     if (hashPart) {

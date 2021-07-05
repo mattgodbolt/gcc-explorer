@@ -32,10 +32,18 @@ function Alert() {
     this.noHandler = null;
     this.prefixMessage = '';
     var yesNo = $('#yes-no');
-    yesNo.find('button.yes').click(_.bind(function () {
+    yesNo.find('button.yes').on('click', _.bind(function () {
         if (this.yesHandler) this.yesHandler();
     }, this));
-    yesNo.find('button.no').click(_.bind(function () {
+    yesNo.find('button.no').on('click', _.bind(function () {
+        if (this.noHandler) this.noHandler();
+    }, this));
+
+    var enterSomething = $('#enter-something');
+    enterSomething.find('button.yes').on('click', _.bind(function () {
+        if (this.yesHandler) this.yesHandler(enterSomething.find('.question-answer').val());
+    }, this));
+    enterSomething.find('button.no').on('click', _.bind(function () {
         if (this.noHandler) this.noHandler();
     }, this));
 }
@@ -88,6 +96,61 @@ Alert.prototype.ask = function (title, question, handlers) {
         modal.off('hidden.bs.modal');
         modal.on('hidden.bs.modal', handlers.onClose);
     }
+    return modal.modal();
+};
+
+/***
+ * Asks the user a two choice question, where the title, content & buttons are customizable
+ *
+ * @param title
+ * @param question
+ * @param handlers
+ * @param handlers.yes {function?} Function to execute on yes press
+ * @param handlers.no {function?} Function to execute on no press
+ * @param handlers.yesHtml {HTML?} HTMl markup of yes button
+ * @param handlers.yesClass {string?} Custom class to add to yes button
+ * @param handlers.noHtml {HTML?} HTMl markup of no button
+ * @param handlers.noClass {string?} Custom class to add to no button
+ * @param handlers.onClose {function?} Function to execute on pane closure
+ */
+Alert.prototype.enterSomething = function (title, question, defaultValue, handlers) {
+    var modal = $('#enter-something');
+    this.yesHandler = handlers ? handlers.yes : function () {};
+    this.noHandler = handlers ? handlers.no : function () {};
+
+    var yesButton = modal.find('.modal-footer .yes');
+    var answerEdit = modal.find('.modal-body .question-answer');
+
+    modal.find('.modal-title').html(title);
+    modal.find('.modal-body .question').html(question);
+    answerEdit.val(defaultValue);
+    answerEdit.on('keyup', function (e) {
+        if (e.keyCode === 13 || e.which === 13) {
+            yesButton.trigger('click');
+        }
+    });
+
+    if (handlers.yesHtml) {
+        yesButton.html(handlers.yesHtml);
+    }
+    if (handlers.yesClass) {
+        yesButton.addClass(handlers.yesClass);
+    }
+    if (handlers.noHtml) {
+        modal.find('.modal-footer .no').html(handlers.noHtml);
+    }
+    if (handlers.noClass) {
+        modal.find('.modal-footer .no').addClass(handlers.noClass);
+    }
+    if (handlers.onClose) {
+        modal.off('hidden.bs.modal');
+        modal.on('hidden.bs.modal', handlers.onClose);
+    }
+
+    modal.on('shown.bs.modal', function () {
+        answerEdit.trigger('focus');
+    });
+
     return modal.modal();
 };
 
